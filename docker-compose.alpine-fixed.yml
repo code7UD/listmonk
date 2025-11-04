@@ -1,0 +1,100 @@
+version: '3.8'
+
+services:
+  # Base de données PostgreSQL 17
+  postgres:
+    image: postgres:17-alpine
+    container_name: listmonk-postgres
+    environment:
+      POSTGRES_DB: ${LISTMONK_DB_DATABASE:-listmonk}
+      POSTGRES_USER: ${LISTMONK_DB_USER:-listmonk}
+      POSTGRES_PASSWORD: ${LISTMONK_DB_PASSWORD:-listmonk_secure_password}
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --lc-collate=C --lc-ctype=C"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/init-scripts:/docker-entrypoint-initdb.d:ro
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${LISTMONK_DB_USER:-listmonk} -d ${LISTMONK_DB_DATABASE:-listmonk}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - listmonk-network
+
+  # Application Listmonk avec extension géographique
+  listmonk:
+    build:
+      context: .
+      dockerfile: Dockerfile.geo.alpine-fixed
+    container_name: listmonk-app
+    environment:
+      # Configuration application
+      LISTMONK_APP_ADDRESS: "0.0.0.0:9000"
+      LISTMONK_APP_ADMIN_USERNAME: ${LISTMONK_APP_ADMIN_USERNAME:-admin}
+      LISTMONK_APP_ADMIN_PASSWORD: ${LISTMONK_APP_ADMIN_PASSWORD:-admin123}
+      
+      # Configuration base de données
+      LISTMONK_DB_HOST: postgres
+      LISTMONK_DB_PORT: 5432
+      LISTMONK_DB_USER: ${LISTMONK_DB_USER:-listmonk}
+      LISTMONK_DB_PASSWORD: ${LISTMONK_DB_PASSWORD:-listmonk_secure_password}
+      LISTMONK_DB_DATABASE: ${LISTMONK_DB_DATABASE:-listmonk}
+      LISTMONK_DB_SSL_MODE: disable
+      
+      # Extensions géographiques
+      LISTMONK_GEO_ENABLED: ${LISTMONK_GEO_ENABLED:-true}
+      LISTMONK_GEO_AUTO_INDEX: ${LISTMONK_GEO_AUTO_INDEX:-true}
+      LISTMONK_GEO_CACHE_TTL: ${LISTMONK_GEO_CACHE_TTL:-3600}
+      
+      # Configuration import CSV
+      LISTMONK_CSV_BATCH_SIZE: ${LISTMONK_CSV_BATCH_SIZE:-1000}
+      LISTMONK_CSV_VALIDATE_INSEE: ${LISTMONK_CSV_VALIDATE_INSEE:-true}
+    ports:
+      - "${LISTMONK_PORT:-9000}:9000"
+    volumes:
+      - listmonk_uploads:/listmonk/uploads
+      - listmonk_static:/listmonk/static
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    restart: unless-stopped
+    networks:
+      - listmonk-network
+
+  # Interface d'administration PostgreSQL (optionnel)
+  adminer:
+    image: adminer:4.8.1
+    container_name: listmonk-adminer
+    environment:
+      ADMINER_DEFAULT_SERVER: postgres
+      ADMINER_DESIGN: pepa-linha
+    ports:
+      - "${ADMINER_PORT:-8080}:8080"
+    depends_on:
+      - postgres
+    restart: unless-stopped
+    networks:
+      - listmonk-network
+    profiles:
+      - admin
+
+volumes:
+  postgres_data:
+    driver: local
+  listmonk_uploads:
+    driver: local
+  listmonk_static:
+    driver: local
+
+networks:
+  listmonk-network:
+    driver: bridge

@@ -138,6 +138,14 @@ func initHTTPHandlers(e *echo.Echo, a *App) {
 		g.POST("/api/import/subscribers", pm(a.ImportSubscribers, "subscribers:import"))
 		g.DELETE("/api/import/subscribers", pm(a.StopImportSubscribers, "subscribers:import"))
 
+		// Geographic API endpoints
+		g.GET("/api/geo/regions", pm(a.handleGetRegions, "subscribers:get_all", "subscribers:get"))
+		g.GET("/api/geo/departements", pm(a.handleGetDepartements, "subscribers:get_all", "subscribers:get"))
+		g.GET("/api/geo/communes", pm(a.handleGetCommunes, "subscribers:get_all", "subscribers:get"))
+		g.GET("/api/geo/csps", pm(a.handleGetCSPs, "subscribers:get_all", "subscribers:get"))
+		g.GET("/api/geo/stats", pm(a.handleGetGeoStats, "subscribers:get_all", "subscribers:get"))
+		g.POST("/api/lists/query/geo", pm(a.handleGeoQuery, "subscribers:get_all", "subscribers:get"))
+
 		// Individual list permissions are applied directly within handleGetLists.
 		g.GET("/api/lists", a.GetLists)
 		g.GET("/api/lists/:id", hasID(a.GetList))

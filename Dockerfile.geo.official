@@ -1,0 +1,42 @@
+# Dockerfile basé sur l'image officielle Listmonk avec extension géographique
+FROM listmonk/listmonk:latest
+
+# Passer en root pour les modifications
+USER root
+
+# Installer les outils nécessaires
+RUN apk add --no-cache postgresql-client curl
+
+# Créer l'utilisateur listmonk s'il n'existe pas
+RUN addgroup -g 1000 listmonk 2>/dev/null || true && \
+    adduser -D -s /bin/sh -u 1000 -G listmonk listmonk 2>/dev/null || true
+
+# Créer les répertoires nécessaires
+RUN mkdir -p /listmonk/uploads /listmonk/static /listmonk/i18n /listmonk/scripts /listmonk/demo && \
+    chown -R listmonk:listmonk /listmonk
+
+# Copier les scripts d'initialisation
+COPY docker/scripts/ /listmonk/scripts/
+RUN chmod +x /listmonk/scripts/*.sh
+
+# Copier les fichiers de démonstration
+COPY demo_geo_data.csv /listmonk/demo/
+COPY demo_geographic_queries.sql /listmonk/demo/
+COPY test_geo_data.csv /listmonk/demo/
+
+# Point d'entrée avec initialisation géographique
+COPY docker/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+# Définir le répertoire de travail
+WORKDIR /listmonk
+
+# Changer vers l'utilisateur listmonk
+USER listmonk
+
+# Exposer le port
+EXPOSE 9000
+
+# Point d'entrée
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["./listmonk"]

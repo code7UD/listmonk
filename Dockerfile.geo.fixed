@@ -1,0 +1,102 @@
+# Dockerfile corrigé pour l'extension géographique Listmonk
+# Résout les problèmes de compatibilité Alpine/BusyBox
+
+# Stage 1: Build frontend
+FROM node:18-alpine AS frontend-builder
+
+WORKDIR /src
+
+# Copier les fichiers de configuration
+COPY frontend/package.json frontend/yarn.lock ./
+
+# Installer les dépendances
+RUN yarn install --frozen-lockfile
+
+# Copier le code source frontend
+COPY frontend/ ./
+
+# Construire le frontend
+RUN yarn build
+
+# Stage 2: Build backend
+FROM golang:1.24-alpine AS backend-builder
+
+# Installer les dépendances système
+RUN apk add --no-cache git make build-base ca-certificates
+
+WORKDIR /src
+
+# Copier les fichiers Go
+COPY go.mod go.sum ./
+RUN go mod download
+
+# Copier le code source
+COPY cmd/ ./cmd/
+COPY internal/ ./internal/
+COPY models/ ./models/
+COPY queries.sql ./
+COPY schema.sql ./
+COPY static/ ./static/
+COPY i18n/ ./i18n/
+COPY config.toml.sample ./config.toml.sample
+COPY permissions.json ./permissions.json
+
+# Copier les assets frontend compilés
+COPY --from=frontend-builder /src/dist ./frontend/dist
+
+# Créer le fichier VERSION manquant
+RUN echo "v3.0.0-geo" > VERSION
+
+# Installer stuffbin pour intégrer les assets
+RUN go install github.com/knadh/stuffbin/...@latest
+
+# Compiler le binaire principal
+RUN CGO_ENABLED=0 go build \
+    -o listmonk \
+    -ldflags="-s -w -X 'main.buildString=v3.0.0-geo ($(date -u +%Y-%m-%dT%H:%M:%S+0000))' -X 'main.versionString=v3.0.0-geo'" \
+    cmd/*.go
+
+# Intégrer les assets statiques dans le binaire
+RUN stuffbin -a stuff -in listmonk -out listmonk \
+    frontend/dist:/frontend \
+    static:/static \
+    i18n:/i18n \
+    config.toml.sample:/config.toml.sample
+
+# Stage 3: Image finale
+FROM alpine:latest
+
+# Installer les dépendances runtime
+RUN apk add --no-cache ca-certificates tzdata postgresql-client curl
+
+# Créer l'utilisateur listmonk
+RUN addgroup -g 1000 listmonk && \
+    adduser -D -s /bin/sh -u 1000 -G listmonk listmonk
+
+# Créer les répertoires nécessaires
+RUN mkdir -p /listmonk/uploads /listmonk/static /listmonk/i18n /listmonk/scripts /listmonk/demo && \
+    chown -R listmonk:listmonk /listmonk
+
+# Copier le binaire depuis le stage de build
+COPY --from=backend-builder /src/listmonk /listmonk/listmonk
+
+# Copier les fichiers de démonstration
+COPY demo_geo_data.csv /listmonk/demo/
+COPY test_geo_data.csv /listmonk/demo/
+
+# Définir les permissions
+RUN chmod +x /listmonk/listmonk && \
+    chown listmonk:listmonk /listmonk/listmonk
+
+# Basculer vers l'utilisateur listmonk
+USER listmonk
+
+# Définir le répertoire de travail
+WORKDIR /listmonk
+
+# Exposer le port
+EXPOSE 9000
+
+# Point d'entrée
+ENTRYPOINT ["./listmonk"]
+CMD ["--config", "config.toml"]

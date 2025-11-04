@@ -113,14 +113,34 @@ SELECT id from sub;
 
 -- name: upsert-subscriber
 -- Upserts a subscriber where existing subscribers get their names and attributes overwritten.
--- If $7 = true, update values, otherwise, skip.
+-- If $24 = true, update values, otherwise, skip.
 WITH sub AS (
-    INSERT INTO subscribers as s (uuid, email, name, attribs, status)
-    VALUES($1, $2, $3, $4, 'enabled')
+    INSERT INTO subscribers as s (uuid, email, name, attribs, status,
+        code_insee, population_commune, date_naissance, csp, siren, siret,
+        telecopie, nom_commune, departement_numero, phone, website,
+        address1, city, state, zipcode, country, title)
+    VALUES($1, $2, $3, $4, 'enabled', $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23)
     ON CONFLICT (email)
     DO UPDATE SET
-        name=(CASE WHEN $7 THEN $3 ELSE s.name END),
-        attribs=(CASE WHEN $7 THEN $4 ELSE s.attribs END),
+        name=(CASE WHEN $24 THEN $3 ELSE s.name END),
+        attribs=(CASE WHEN $24 THEN $4 ELSE s.attribs END),
+        code_insee=(CASE WHEN $24 THEN $7 ELSE s.code_insee END),
+        population_commune=(CASE WHEN $24 THEN $8 ELSE s.population_commune END),
+        date_naissance=(CASE WHEN $24 THEN $9 ELSE s.date_naissance END),
+        csp=(CASE WHEN $24 THEN $10 ELSE s.csp END),
+        siren=(CASE WHEN $24 THEN $11 ELSE s.siren END),
+        siret=(CASE WHEN $24 THEN $12 ELSE s.siret END),
+        telecopie=(CASE WHEN $24 THEN $13 ELSE s.telecopie END),
+        nom_commune=(CASE WHEN $24 THEN $14 ELSE s.nom_commune END),
+        departement_numero=(CASE WHEN $24 THEN $15 ELSE s.departement_numero END),
+        phone=(CASE WHEN $24 THEN $16 ELSE s.phone END),
+        website=(CASE WHEN $24 THEN $17 ELSE s.website END),
+        address1=(CASE WHEN $24 THEN $18 ELSE s.address1 END),
+        city=(CASE WHEN $24 THEN $19 ELSE s.city END),
+        state=(CASE WHEN $24 THEN $20 ELSE s.state END),
+        zipcode=(CASE WHEN $24 THEN $21 ELSE s.zipcode END),
+        country=(CASE WHEN $24 THEN $22 ELSE s.country END),
+        title=(CASE WHEN $24 THEN $23 ELSE s.title END),
         updated_at=NOW()
     RETURNING uuid, id, status
 ),
@@ -130,7 +150,7 @@ subs AS (
     FROM sub, UNNEST($5::INT[]) AS listID
     ON CONFLICT (subscriber_id, list_id) DO UPDATE
     SET updated_at = NOW(),
-        status = CASE WHEN $7 THEN EXCLUDED.status ELSE subscriber_lists.status END
+        status = CASE WHEN $24 THEN EXCLUDED.status ELSE subscriber_lists.status END
 )
 SELECT uuid, id from sub;
 

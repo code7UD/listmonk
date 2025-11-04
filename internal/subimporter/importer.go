@@ -19,8 +19,10 @@ import (
 	"net/mail"
 	"os"
 	"regexp"
+	"strconv"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/gofrs/uuid/v5"
 	"github.com/knadh/listmonk/internal/i18n"
@@ -126,9 +128,28 @@ var (
 	ErrIsImporting = errors.New("import is already running")
 
 	csvHeaders = map[string]bool{
-		"email":      true,
-		"name":       true,
-		"attributes": true}
+		"email":                true,
+		"name":                 true,
+		"firstname":            true,
+		"lastname":             true,
+		"attributes":           true,
+		"title":                true,
+		"phone":                true,
+		"website":              true,
+		"address1":             true,
+		"city":                 true,
+		"state":                true,
+		"zipcode":              true,
+		"country":              true,
+		"code_insee":           true,
+		"population_commune":   true,
+		"date_naissance":       true,
+		"csp":                  true,
+		"siren":                true,
+		"siret":                true,
+		"telecopie":            true,
+		"nom_commune":          true,
+		"departement_numero":   true}
 
 	regexCleanStr = regexp.MustCompile("[[:^ascii:]]")
 )
@@ -297,7 +318,10 @@ func (s *Session) Start() {
 		}
 
 		if s.opt.Mode == ModeSubscribe {
-			_, err = stmt.Exec(uu, sub.Email, sub.Name, sub.Attribs, pq.Array(listIDs), s.opt.SubStatus, s.opt.Overwrite)
+			_, err = stmt.Exec(uu, sub.Email, sub.Name, sub.Attribs, pq.Array(listIDs), s.opt.SubStatus,
+				sub.CodeINSEE, sub.PopulationCommune, sub.DateNaissance, sub.CSP, sub.SIREN, sub.SIRET,
+				sub.Telecopie, sub.NomCommune, sub.DepartementNumero, sub.Phone, sub.Website,
+				sub.Address1, sub.City, sub.State, sub.Zipcode, sub.Country, sub.Title, s.opt.Overwrite)
 		} else if s.opt.Mode == ModeBlocklist {
 			_, err = stmt.Exec(uu, sub.Email, sub.Name, sub.Attribs)
 		}
@@ -544,6 +568,108 @@ func (s *Session) LoadCSV(srcPath string, delim rune) error {
 
 		if v, ok := row["name"]; ok {
 			sub.Name = v
+		}
+		
+		// Handle firstname/lastname combination for name if name is not provided
+		if sub.Name == "" {
+			if firstname, ok := row["firstname"]; ok {
+				if lastname, ok2 := row["lastname"]; ok2 {
+					sub.Name = strings.TrimSpace(firstname + " " + lastname)
+				} else {
+					sub.Name = firstname
+				}
+			}
+		}
+
+		// Geographic fields from CSV
+		if v, ok := row["code_insee"]; ok && v != "" {
+			sub.CodeINSEE.String = v
+			sub.CodeINSEE.Valid = true
+		}
+		
+		if v, ok := row["population_commune"]; ok && v != "" {
+			if pop, err := strconv.Atoi(v); err == nil {
+				sub.PopulationCommune.Int = pop
+				sub.PopulationCommune.Valid = true
+			}
+		}
+		
+		if v, ok := row["date_naissance"]; ok && v != "" {
+			// Try to parse date in DD/MM/YYYY format
+			if t, err := time.Parse("02/01/2006", v); err == nil {
+				sub.DateNaissance.Time = t
+				sub.DateNaissance.Valid = true
+			}
+		}
+		
+		if v, ok := row["csp"]; ok && v != "" {
+			sub.CSP.String = v
+			sub.CSP.Valid = true
+		}
+		
+		if v, ok := row["siren"]; ok && v != "" {
+			sub.SIREN.String = v
+			sub.SIREN.Valid = true
+		}
+		
+		if v, ok := row["siret"]; ok && v != "" {
+			sub.SIRET.String = v
+			sub.SIRET.Valid = true
+		}
+		
+		if v, ok := row["telecopie"]; ok && v != "" {
+			sub.Telecopie.String = v
+			sub.Telecopie.Valid = true
+		}
+		
+		if v, ok := row["nom_commune"]; ok && v != "" {
+			sub.NomCommune.String = v
+			sub.NomCommune.Valid = true
+		}
+		
+		if v, ok := row["departement_numero"]; ok && v != "" {
+			sub.DepartementNumero.String = v
+			sub.DepartementNumero.Valid = true
+		}
+		
+		if v, ok := row["phone"]; ok && v != "" {
+			sub.Phone.String = v
+			sub.Phone.Valid = true
+		}
+		
+		if v, ok := row["website"]; ok && v != "" {
+			sub.Website.String = v
+			sub.Website.Valid = true
+		}
+		
+		if v, ok := row["address1"]; ok && v != "" {
+			sub.Address1.String = v
+			sub.Address1.Valid = true
+		}
+		
+		if v, ok := row["city"]; ok && v != "" {
+			sub.City.String = v
+			sub.City.Valid = true
+		}
+		
+		if v, ok := row["state"]; ok && v != "" {
+			sub.State.String = v
+			sub.State.Valid = true
+		}
+		
+		if v, ok := row["zipcode"]; ok && v != "" {
+			sub.Zipcode.String = v
+			sub.Zipcode.Valid = true
+		}
+		
+		if v, ok := row["country"]; ok && v != "" {
+			sub.Country.String = v
+			sub.Country.Valid = true
+		}
+		
+		if v, ok := row["title"]; ok && v != "" {
+			sub.Title.String = v
+			sub.Title.Valid = true
 		}
 
 		sub, err = s.im.ValidateFields(sub)

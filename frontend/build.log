@@ -1,0 +1,281 @@
+
+> listmonk@0.1.0 prebuild
+> eslint --ext .js,.vue src
+
+
+> listmonk@0.1.0 build
+> vite build
+
+[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+vite v5.4.19 building for production...
+<script src="/admin/custom.js?v=asset_version"> in "/index.html" can't be bundled without type="module" attribute
+
+/admin/custom.css?v=asset_version doesn't exist at build time, it will remain unchanged to be resolved at runtime
+transforming...
+DEPRECATION WARNING [user-authored]: The legacy JS API is deprecated and will be removed in Dart Sass 2.0.0.
+
+More info: https://sass-lang.com/d/legacy-js-api
+
+DEPRECATION WARNING [user-authored]: Sass @import rules are deprecated and will be removed in Dart Sass 3.0.0.
+
+More info and automated migrator: https://sass-lang.com/d/import
+
+  ╷
+2 │ @import "assets/style.scss";
+  │         ^^^^^^^^^^^^^^^^^^^
+  ╵
+    src/App.vue 2:9  root stylesheet
+
+DEPRECATION WARNING [user-authored]: Sass @import rules are deprecated and will be removed in Dart Sass 3.0.0.
+
+More info and automated migrator: https://sass-lang.com/d/import
+
+  ╷
+2 │ @import "../node_modules/bulma/sass/utilities/_all";
+  │         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  ╵
+    src/assets/style.scss 2:9  @import
+    src/App.vue 2:9            root stylesheet
+
+DEPRECATION WARNING [user-authored]: Sass @import rules are deprecated and will be removed in Dart Sass 3.0.0.
+
+More info and automated migrator: https://sass-lang.com/d/import
+
+   ╷
+56 │ @import "bulma";
+   │         ^^^^^^^
+   ╵
+    src/assets/style.scss 56:9  @import
+    src/App.vue 2:9             root stylesheet
+
+DEPRECATION WARNING [user-authored]: Sass @import rules are deprecated and will be removed in Dart Sass 3.0.0.
+
+More info and automated migrator: https://sass-lang.com/d/import
+
+   ╷
+57 │ @import "buefy/src/scss/buefy";
+   │         ^^^^^^^^^^^^^^^^^^^^^^
+   ╵
+    src/assets/style.scss 57:9  @import
+    src/App.vue 2:9             root stylesheet
+
+DEPRECATION WARNING [user-authored]: Sass @import rules are deprecated and will be removed in Dart Sass 3.0.0.
+
+More info and automated migrator: https://sass-lang.com/d/import
+
+  ╷
+4 │ @import "initial-variables"
+  │         ^^^^^^^^^^^^^^^^^^^
+  ╵
+    node_modules/bulma/sass/utilities/_all.sass 4:9  @import
+    src/assets/style.scss 2:9                        @import
+    src/App.vue 2:9                                  root stylesheet
+
+DEPRECATION WARNING [user-authored]: Global built-in functions are deprecated and will be removed in Dart Sass 3.0.0.
+Use meta.type-of instead.
+
+More info and automated migrator: https://sass-lang.com/d/import
+
+   ╷
+65 │   @if type-of($color) != 'color'
+   │       ^^^^^^^^^^^^^^^
+   ╵
+    node_modules/bulma/sass/utilities/functions.sass 65:7           colorLuminance()
+    node_modules/bulma/sass/utilities/functions.sass 80:8           findColorInvert()
+    node_modules/bulma/sass/utilities/derived-variables.sass 16:17  @import
+    node_modules/bulma/sass/utilities/_all.sass 6:9                 @import
+    src/assets/style.scss 2:9                                       @import
+    src/App.vue 2:9                                                 root stylesheet
+
+DEPRECATION WARNING [user-authored]: Global built-in functions are deprecated and will be removed in Dart Sass 3.0.0.
+Use color.red instead.
+
+More info and automated migrator: https://sass-lang.com/d/import
+
+   ╷
+67 │   $color-rgb: ('red': red($color),'green': green($color),'blue': blue($color))
+   │                       ^^^^^^^^^^^
+   ╵
+    node_modules/bulma/sass/utilities/functions.sass 67:23          colorLuminance()
+    node_modules/bulma/sass/utilities/functions.sass 80:8           findColorInvert()
+    node_modules/bulma/sass/utilities/derived-variables.sass 16:17  @import
+    node_modules/bulma/sass/utilities/_all.sass 6:9                 @import
+    src/assets/style.scss 2:9                                       @import
+    src/App.vue 2:9                                                 root stylesheet
+
+DEPRECATION WARNING [user-authored]: red() is deprecated. Suggestion:
+
+color.channel($color, "red", $space: rgb)
+
+More info: https://sass-lang.com/d/color-functions
+
+   ╷
+67 │   $color-rgb: ('red': red($color),'green': green($color),'blue': blue($color))
+   │                       ^^^^^^^^^^^
+   ╵
+    node_modules/bulma/sass/utilities/functions.sass 67:23          colorLuminance()
+    node_modules/bulma/sass/utilities/functions.sass 80:8           findColorInvert()
+    node_modules/bulma/sass/utilities/derived-variables.sass 16:17  @import
+    node_modules/bulma/sass/utilities/_all.sass 6:9                 @import
+    src/assets/style.scss 2:9                                       @import
+    src/App.vue 2:9                                                 root stylesheet
+
+DEPRECATION WARNING [user-authored]: Global built-in functions are deprecated and will be removed in Dart Sass 3.0.0.
+Use color.green instead.
+
+More info and automated migrator: https://sass-lang.com/d/import
+
+   ╷
+67 │   $color-rgb: ('red': red($color),'green': green($color),'blue': blue($color))
+   │                                            ^^^^^^^^^^^^^
+   ╵
+    node_modules/bulma/sass/utilities/functions.sass 67:44          colorLuminance()
+    node_modules/bulma/sass/utilities/functions.sass 80:8           findColorInvert()
+    node_modules/bulma/sass/utilities/derived-variables.sass 16:17  @import
+    node_modules/bulma/sass/utilities/_all.sass 6:9                 @import
+    src/assets/style.scss 2:9                                       @import
+    src/App.vue 2:9                                                 root stylesheet
+
+DEPRECATION WARNING [user-authored]: green() is deprecated. Suggestion:
+
+color.channel($color, "green", $space: rgb)
+
+More info: https://sass-lang.com/d/color-functions
+
+   ╷
+67 │   $color-rgb: ('red': red($color),'green': green($color),'blue': blue($color))
+   │                                            ^^^^^^^^^^^^^
+   ╵
+    node_modules/bulma/sass/utilities/functions.sass 67:44          colorLuminance()
+    node_modules/bulma/sass/utilities/functions.sass 80:8           findColorInvert()
+    node_modules/bulma/sass/utilities/derived-variables.sass 16:17  @import
+    node_modules/bulma/sass/utilities/_all.sass 6:9                 @import
+    src/assets/style.scss 2:9                                       @import
+    src/App.vue 2:9                                                 root stylesheet
+
+DEPRECATION WARNING [user-authored]: Global built-in functions are deprecated and will be removed in Dart Sass 3.0.0.
+Use color.blue instead.
+
+More info and automated migrator: https://sass-lang.com/d/import
+
+   ╷
+67 │   $color-rgb: ('red': red($color),'green': green($color),'blue': blue($color))
+   │                                                                  ^^^^^^^^^^^^
+   ╵
+    node_modules/bulma/sass/utilities/functions.sass 67:66          colorLuminance()
+    node_modules/bulma/sass/utilities/functions.sass 80:8           findColorInvert()
+    node_modules/bulma/sass/utilities/derived-variables.sass 16:17  @import
+    node_modules/bulma/sass/utilities/_all.sass 6:9                 @import
+    src/assets/style.scss 2:9                                       @import
+    src/App.vue 2:9                                                 root stylesheet
+
+DEPRECATION WARNING [user-authored]: blue() is deprecated. Suggestion:
+
+color.channel($color, "blue", $space: rgb)
+
+More info: https://sass-lang.com/d/color-functions
+
+   ╷
+67 │   $color-rgb: ('red': red($color),'green': green($color),'blue': blue($color))
+   │                                                                  ^^^^^^^^^^^^
+   ╵
+    node_modules/bulma/sass/utilities/functions.sass 67:66          colorLuminance()
+    node_modules/bulma/sass/utilities/functions.sass 80:8           findColorInvert()
+    node_modules/bulma/sass/utilities/derived-variables.sass 16:17  @import
+    node_modules/bulma/sass/utilities/_all.sass 6:9                 @import
+    src/assets/style.scss 2:9                                       @import
+    src/App.vue 2:9                                                 root stylesheet
+
+DEPRECATION WARNING [user-authored]: Global built-in functions are deprecated and will be removed in Dart Sass 3.0.0.
+Use map.merge instead.
+
+More info and automated migrator: https://sass-lang.com/d/import
+
+   ╷
+76 │     $color-rgb: map-merge($color-rgb, ($name: $value))
+   │                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   ╵
+    node_modules/bulma/sass/utilities/functions.sass 76:17          colorLuminance()
+    node_modules/bulma/sass/utilities/functions.sass 80:8           findColorInvert()
+    node_modules/bulma/sass/utilities/derived-variables.sass 16:17  @import
+    node_modules/bulma/sass/utilities/_all.sass 6:9                 @import
+    src/assets/style.scss 2:9                                       @import
+    src/App.vue 2:9                                                 root stylesheet
+
+DEPRECATION WARNING [user-authored]: lightness() is deprecated. Suggestion:
+
+color.channel($color, "lightness", $space: hsl)
+
+More info: https://sass-lang.com/d/color-functions
+
+   ╷
+88 │     @if lightness($color) > 96%
+   │         ^^^^^^^^^^^^^^^^^
+   ╵
+    node_modules/bulma/sass/utilities/functions.sass 88:9           findLightColor()
+    node_modules/bulma/sass/utilities/derived-variables.sass 26:17  @import
+    node_modules/bulma/sass/utilities/_all.sass 6:9                 @import
+    src/assets/style.scss 2:9                                       @import
+    src/App.vue 2:9                                                 root stylesheet
+
+DEPRECATION WARNING [user-authored]: darken() is deprecated. Suggestions:
+
+color.scale($color, $lightness: -24.5901639344%)
+color.adjust($color, $lightness: -15%)
+
+More info: https://sass-lang.com/d/color-functions
+
+   ╷
+68 │ $code: darken($red, 15%) !default
+   │        ^^^^^^^^^^^^^^^^^
+   ╵
+    node_modules/bulma/sass/utilities/derived-variables.sass 68:8  @import
+    node_modules/bulma/sass/utilities/_all.sass 6:9                @import
+    src/assets/style.scss 2:9                                      @import
+    src/App.vue 2:9                                                root stylesheet
+
+WARNING: 394 repetitive deprecation warnings omitted.
+
+✓ 479 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                                0.86 kB │ gzip:   0.46 kB
+dist/static/fontello-DihDKTDE.woff2            8.14 kB
+dist/static/Inter-Regular-CKDp9E3C.woff2      98.87 kB
+dist/static/Inter-Bold-CuhepTt8.woff2        106.14 kB
+dist/static/VisualEditor-CxJYELG7.css          0.15 kB │ gzip:   0.13 kB
+dist/static/Campaign-DZ8p1fzH.css             60.54 kB │ gzip:   9.72 kB
+dist/static/index-BPNGCMpA.css               407.99 kB │ gzip:  53.73 kB
+dist/static/404-C5qdssnd.js                    0.35 kB │ gzip:   0.25 kB
+dist/static/EmptyPlaceholder-CdrQU0y7.js       0.50 kB │ gzip:   0.33 kB
+dist/static/Logs-CUKjd7Gy.js                   0.72 kB │ gzip:   0.46 kB
+dist/static/CopyText-CbWDCQtA.js               0.83 kB │ gzip:   0.52 kB
+dist/static/LogView-Hq46nGXK.js                1.04 kB │ gzip:   0.60 kB
+dist/static/ListSelector-DFumZDb7.js           2.05 kB │ gzip:   0.94 kB
+dist/static/CampaignPreview-BXEKeWz5.js        2.33 kB │ gzip:   0.97 kB
+dist/static/VisualEditor-B78xDXyB.js           2.76 kB │ gzip:   1.27 kB
+dist/static/UserProfile-DLH9fBVn.js            2.85 kB │ gzip:   1.03 kB
+dist/static/Forms-D0aMl6zc.js                  3.04 kB │ gzip:   1.29 kB
+dist/static/Maintenance-af73S1nl.js            4.61 kB │ gzip:   1.10 kB
+dist/static/Media-CJT5Bv6c.js                  5.32 kB │ gzip:   1.92 kB
+dist/static/Bounces-DBRdcbFX.js                5.36 kB │ gzip:   1.70 kB
+dist/static/Dashboard-DOrP6MRy.js              5.83 kB │ gzip:   1.51 kB
+dist/static/CampaignAnalytics-DIpMZLk-.js      6.60 kB │ gzip:   2.50 kB
+dist/static/Import-DlImGGqt.js                 8.26 kB │ gzip:   2.51 kB
+dist/static/Templates-DIGacZjf.js             11.77 kB │ gzip:   3.06 kB
+dist/static/Roles-lSeN5A-Q.js                 12.35 kB │ gzip:   3.44 kB
+dist/static/Lists-CVyDcrRs.js                 12.85 kB │ gzip:   3.54 kB
+dist/static/Campaigns-DDWBVKMY.js             13.38 kB │ gzip:   3.48 kB
+dist/static/Users-GhUq-B7n.js                 14.25 kB │ gzip:   3.50 kB
+dist/static/Subscribers-BGX9ppfN.js           27.87 kB │ gzip:   6.17 kB
+dist/static/Settings-M5E2rLo7.js              62.13 kB │ gzip:   9.79 kB
+dist/static/Chart-CHGfm01z.js                206.42 kB │ gzip:  70.93 kB
+dist/static/CodeEditor-DwBusFJv.js           519.58 kB │ gzip: 178.70 kB
+dist/static/index-cVmAQmGj.js                593.27 kB │ gzip: 167.78 kB
+dist/static/Campaign-9m_c5EPf.js           1,665.79 kB │ gzip: 504.64 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 12.73s

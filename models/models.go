@@ -149,6 +149,25 @@ type Subscriber struct {
 	Attribs JSON           `db:"attribs" json:"attribs"`
 	Status  string         `db:"status" json:"status"`
 	Lists   types.JSONText `db:"lists" json:"lists"`
+
+	// Geographic fields from CSV
+	CodeINSEE           null.String `db:"code_insee" json:"code_insee"`
+	PopulationCommune   null.Int    `db:"population_commune" json:"population_commune"`
+	DateNaissance       null.Time   `db:"date_naissance" json:"date_naissance"`
+	CSP                 null.String `db:"csp" json:"csp"`
+	SIREN               null.String `db:"siren" json:"siren"`
+	SIRET               null.String `db:"siret" json:"siret"`
+	Telecopie           null.String `db:"telecopie" json:"telecopie"`
+	NomCommune          null.String `db:"nom_commune" json:"nom_commune"`
+	DepartementNumero   null.String `db:"departement_numero" json:"departement_numero"`
+	Phone               null.String `db:"phone" json:"phone"`
+	Website             null.String `db:"website" json:"website"`
+	Address1            null.String `db:"address1" json:"address1"`
+	City                null.String `db:"city" json:"city"`
+	State               null.String `db:"state" json:"state"`
+	Zipcode             null.String `db:"zipcode" json:"zipcode"`
+	Country             null.String `db:"country" json:"country"`
+	Title               null.String `db:"title" json:"title"`
 }
 type subLists struct {
 	SubscriberID int            `db:"subscriber_id"`
@@ -730,4 +749,60 @@ func (h Headers) Value() (driver.Value, error) {
 	}
 
 	return "[]", nil
+}
+
+// Geographic models for French segmentation
+
+// GeoQueryParams represents geographic query parameters based on CSV data
+type GeoQueryParams struct {
+	Regions               []string `json:"regions"`
+	Departements          []string `json:"departements"`
+	Communes              []string `json:"communes"`
+	UsePopulation         bool     `json:"use_population"`
+	PopulationMin         *int     `json:"population_min,omitempty"`
+	PopulationMax         *int     `json:"population_max,omitempty"`
+	CSPs                  []string `json:"csps,omitempty"`
+	DateNaissanceMin      *string  `json:"date_naissance_min,omitempty"`
+	DateNaissanceMax      *string  `json:"date_naissance_max,omitempty"`
+	CodesINSEE            []string `json:"codes_insee,omitempty"`
+}
+
+// DepartementRegion represents the mapping between departments and regions
+type DepartementRegion struct {
+	DepartementNumero string `db:"departement_numero" json:"departement_numero"`
+	DepartementNom    string `db:"departement_nom" json:"departement_nom"`
+	RegionNom         string `db:"region_nom" json:"region_nom"`
+	RegionCode        string `db:"region_code" json:"region_code"`
+}
+
+// GeoStats represents geographic statistics
+type GeoStats struct {
+	TotalSubscribers    int                    `json:"total_subscribers"`
+	ByRegion           map[string]int         `json:"by_region"`
+	ByDepartement      map[string]int         `json:"by_departement"`
+	ByCSP              map[string]int         `json:"by_csp"`
+	PopulationStats    PopulationStats        `json:"population_stats"`
+}
+
+// PopulationStats represents population statistics
+type PopulationStats struct {
+	Min    int     `json:"min"`
+	Max    int     `json:"max"`
+	Avg    float64 `json:"avg"`
+	Total  int     `json:"total"`
+}
+
+// CommuneInfo represents commune information for autocomplete
+type CommuneInfo struct {
+	NomCommune        string `db:"nom_commune" json:"nom_commune"`
+	CodeINSEE         string `db:"code_insee" json:"code_insee"`
+	PopulationCommune int    `db:"population_commune" json:"population_commune"`
+	DepartementNumero string `db:"departement_numero" json:"departement_numero"`
+	Count             int    `db:"count" json:"count"`
+}
+
+// CSPInfo represents CSP information with count
+type CSPInfo struct {
+	CSP   string `db:"csp" json:"csp"`
+	Count int    `db:"count" json:"count"`
 }
